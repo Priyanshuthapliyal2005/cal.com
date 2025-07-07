@@ -136,8 +136,20 @@ export async function postHandler(request: NextRequest) {
         log.error("Failed to Submit Transcription Batch Processor Job:", safeStringify(err));
       }
 
+      // Get CalVideoSettings to check if the recording for guests are disable
+      let calVideoSetting = null;
+      if (booking.eventTypeId) {
+        calVideoSetting = await prisma.calVideoSettings.findUnique({
+          where: {
+            eventTypeId: booking.eventTypeId,
+          },
+        });
+      }
+
+      const disableRecordingEmailsForGuests = calVideoSetting?.disableRecordingEmailsForGuests ?? false;
+
       // send emails to all attendees only when user has team plan
-      await sendDailyVideoRecordingEmails(evt, downloadLink);
+      await sendDailyVideoRecordingEmails(evt, downloadLink, disableRecordingEmailsForGuests);
 
       return NextResponse.json({ message: "Success" });
     } else if (body.type === "meeting.ended") {

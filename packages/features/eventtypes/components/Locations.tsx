@@ -361,6 +361,21 @@ const Locations: React.FC<LocationsProps> = ({
                       />
 
                       <Controller
+                        name="calVideoSettings.disableRecordingEmailsForGuests"
+                        defaultValue={!!eventType.calVideoSettings?.disableRecordingEmailsForGuests}
+                        render={({ field: { onChange, value } }) => {
+                          return (
+                            <SettingsToggle
+                              title={t("disable_recording_emails_for_guests")}
+                              labelClassName="text-sm"
+                              checked={value}
+                              onCheckedChange={onChange}
+                            />
+                          );
+                        }}
+                      />
+
+                      <Controller
                         name="calVideoSettings.disableRecordingForOrganizer"
                         defaultValue={!!eventType.calVideoSettings?.disableRecordingForOrganizer}
                         render={({ field: { onChange, value } }) => {
